@@ -1,0 +1,329 @@
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(14, 18, 24, 0.78);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 20px;
+  animation: fadeIn 0.25s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-parchment {
+  position: relative;
+  width: 720px;
+  max-width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: #fdfbf7;
+  border: 3px solid #b89748;
+  border-radius: 16px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 235, 170, 0.3);
+  display: flex;
+  flex-direction: column;
+  color: #2b2219;
+  animation: scaleUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes scaleUp {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Classical Greek Meander Pattern Bar */
+.modal-greek-pattern-bar {
+  height: 8px;
+  background: repeating-linear-gradient(
+    90deg,
+    #b89748 0px,
+    #b89748 8px,
+    #fdfbf7 8px,
+    #fdfbf7 14px,
+    #b89748 14px,
+    #b89748 20px,
+    #2b2219 20px,
+    #2b2219 24px
+  );
+  border-bottom: 1px solid #9c7e35;
+}
+
+.modal-greek-pattern-bar.bottom {
+  border-bottom: none;
+  border-top: 1px solid #9c7e35;
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  background: rgba(43, 34, 25, 0.08);
+  border: 1px solid rgba(184, 151, 72, 0.4);
+  color: #4a3b2c;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  z-index: 10;
+}
+
+.modal-close-btn:hover {
+  background: #b89748;
+  color: #fff;
+  transform: rotate(90deg);
+}
+
+.modal-body {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 24px;
+  padding: 28px 24px;
+}
+
+@media (max-width: 640px) {
+  .modal-body {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+/* Sidebar with Portrait */
+.modal-sidebar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.portrait-cameo-frame {
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+  border: 4px solid #b89748;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15), inset 0 0 10px rgba(184, 151, 72, 0.3);
+  overflow: hidden;
+  background: #f4ede0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.portrait-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.sidebar-meta {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: #f7f1e5;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #e0d5c1;
+  font-size: 11.5px;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #5c4a38;
+}
+
+.meta-icon {
+  color: #b89748;
+  flex-shrink: 0;
+}
+
+/* Main Content */
+.modal-main {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.modal-header {
+  border-bottom: 2px solid #ecdcc0;
+  padding-bottom: 10px;
+}
+
+.philosopher-title {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 26px;
+  margin: 0;
+  color: #2b1f13;
+  letter-spacing: 0.5px;
+}
+
+.philosopher-subtitle {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #9c7e35;
+  font-weight: 600;
+}
+
+.biography-section {
+  background: #fbf7ee;
+  border: 1px solid #ebd9b8;
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+
+.section-label {
+  margin: 0 0 6px 0;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #7d6538;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.biography-text {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #4a3d31;
+}
+
+/* Wisdom Card */
+.wisdom-callout-card {
+  background: #fff;
+  border: 2px solid #b89748;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 4px 12px rgba(184, 151, 72, 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.callout-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #9c7e35;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.wisdom-quote-large {
+  margin: 0;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 16px;
+  line-height: 1.45;
+  color: #1a1612;
+  font-style: italic;
+  padding-left: 12px;
+  border-left: 3px solid #b89748;
+}
+
+.wisdom-source-tag {
+  font-size: 11px;
+  color: #7a6e60;
+  font-style: italic;
+  text-align: right;
+}
+
+.wisdom-explanation-box {
+  background: #fbf8f2;
+  border: 1px solid #e8dec8;
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: #47392a;
+}
+
+.wisdom-explanation-box strong {
+  display: block;
+  font-size: 11px;
+  text-transform: uppercase;
+  color: #8c6e31;
+  margin-bottom: 2px;
+}
+
+.wisdom-explanation-box p {
+  margin: 0;
+}
+
+/* Actions */
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.discover-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #b89748, #9c7e35);
+  color: #ffffff;
+  border: none;
+  padding: 12px 18px;
+  border-radius: 8px;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(184, 151, 72, 0.3);
+  transition: all 0.2s ease;
+}
+
+.discover-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #c7a759, #aa8b3e);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(184, 151, 72, 0.4);
+}
+
+.discover-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.spin-icon {
+  animation: spin 1s linear infinite;
+}
+
+.done-btn {
+  background: #f0e6d2;
+  color: #4a3b2c;
+  border: 1px solid #d4c4a5;
+  padding: 12px 18px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.done-btn:hover {
+  background: #e5d7bd;
+  color: #2b1f13;
+}

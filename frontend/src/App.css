@@ -1,0 +1,92 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap');
+
+* {
+  box-sizing: border-box;
+}
+
+body, html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: #121910;
+  color: #f7ecd5;
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.game-app-root {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: #528a42;
+}
+
+/* In-game Quick Help Modal */
+.game-help-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(14, 18, 24, 0.75);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2100;
+  padding: 20px;
+}
+
+.game-help-card {
+  background: #fdfbf7;
+  border: 2.5px solid #b89748;
+  border-radius: 12px;
+  padding: 24px;
+  width: 480px;
+  max-width: 100%;
+  color: #2b2219;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+}
+
+.help-heading {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 20px;
+  margin: 0 0 16px 0;
+  color: #2b1f13;
+  border-bottom: 2px solid #ecdcc0;
+  padding-bottom: 8px;
+}
+
+.help-list {
+  padding-left: 20px;
+  margin: 0 0 20px 0;
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+
+.help-list li {
+  margin-bottom: 8px;
+}
+
+.help-close-btn {
+  width: 100%;
+  background: #b89748;
+  color: #ffffff;
+  border: none;
+  padding: 10px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Cinzel', Georgia, serif;
+  transition: background 0.15s;
+}
+
+.help-close-btn:hover {
+  background: #9c7e35;
+}
