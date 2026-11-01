@@ -285,6 +285,65 @@ Open **`http://127.0.0.1:5173`** in your web browser.
 
 ---
 
+## ☁️ How to Deploy to Vercel
+
+Philosophy World is pre-configured for seamless Vercel deployment with:
+- **`vercel.json`**: Pre-configured build commands and API rewrites
+- **`api/index.py`**: Serverless ASGI adapter for the FastAPI backend
+- **`requirements.txt`**: Python dependencies for the Vercel Python runtime
+- **Serverless SQLite Handler**: Automatically handles `/tmp` database copying for write-safe execution in serverless containers
+
+### 🚀 Method 1: Deploy via GitHub & Vercel Dashboard (Recommended)
+
+1. **Push your code to GitHub**:
+   ```bash
+   git add .
+   git commit -m "Configure Vercel deployment and serverless FastAPI adapter"
+   git push origin main
+   ```
+
+2. **Import to Vercel**:
+   - Go to [vercel.com](https://vercel.com) and log in.
+   - Click **"Add New..."** ➔ **"Project"**.
+   - Select your **`philogame`** GitHub repository and click **Import**.
+
+3. **Deploy with 1-Click**:
+   - Vercel will automatically detect `vercel.json` (no need to change Root Directory or Build Commands).
+   - Click **"Deploy"**.
+   - In 1 to 2 minutes, your project will be live at `https://your-project-name.vercel.app`!
+
+---
+
+### 💻 Method 2: Deploy via Vercel CLI (Direct from Terminal)
+
+1. **Install the Vercel CLI** (if not already installed):
+   ```bash
+   npm install -g vercel
+   ```
+
+2. **Deploy from project root**:
+   ```bash
+   vercel
+   ```
+   - Follow the prompts (press Enter to accept the defaults).
+   - For production deployment:
+   ```bash
+   vercel --prod
+   ```
+
+---
+
+### ⚡ Architecture & Deployment Notes
+
+- **All-in-One Deployment**: Both the React/Phaser frontend and the FastAPI backend run together on the same domain (e.g. `https://your-app.vercel.app`).
+- **REST Endpoints**: Calls to `/api/...` are automatically routed by Vercel to `api/index.py`.
+- **Database on Serverless**: The SQLite database (`philosophy_world.db`) is bundled with the build. On Vercel, it is copied to `/tmp/philosophy_world.db` on container spin-up for safe read/write access.
+- **Custom Backend Option**: If you prefer hosting the FastAPI backend on a dedicated VPS or container service (like Render, Railway, or Fly.io) and only host the React frontend on Vercel:
+  - Add the environment variable in Vercel: `VITE_API_URL=https://your-backend-service.onrender.com`
+  - The frontend automatically routes all API requests directly to your backend!
+
+---
+
 ## 🛡️ Admin Council Panel (Philosopher & Wisdom Management)
 
 Philosophy World includes a full-featured **Admin Council Panel** with authentication for managing philosophers, wisdom quotes, and game world coordinates in real-time.

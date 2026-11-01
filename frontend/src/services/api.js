@@ -1,30 +1,36 @@
 import axios from 'axios';
 
-// Primary and fallback URLs
-const DIRECT_BACKEND_URL = 'http://127.0.0.1:8000';
+// Base API URL: supports VITE_API_URL for production or relative /api for single-domain deployment
+const CUSTOM_API_URL = import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace(/\/$/, '') : '';
+const LOCAL_BACKEND_FALLBACK = 'http://127.0.0.1:8000';
 
 async function sendRequest(method, endpoint, data = null, params = {}) {
+  const targetUrl = CUSTOM_API_URL ? `${CUSTOM_API_URL}${endpoint}` : endpoint;
+
   const config = {
     method,
-    url: endpoint,
+    url: targetUrl,
     params,
     data,
-    timeout: 4000,
+    timeout: 6000,
     headers: { 'Content-Type': 'application/json' },
   };
 
   try {
     const res = await axios(config);
     return res.data;
-  } catch (proxyError) {
-    try {
-      config.url = `${DIRECT_BACKEND_URL}${endpoint}`;
-      const res = await axios(config);
-      return res.data;
-    } catch (directError) {
-      console.warn(`API ${method} to ${endpoint} failed:`, directError?.response?.data || directError.message);
-      throw directError;
+  } catch (primaryError) {
+    if (!CUSTOM_API_URL && !endpoint.startsWith('http')) {
+      try {
+        config.url = `${LOCAL_BACKEND_FALLBACK}${endpoint}`;
+        const res = await axios(config);
+        return res.data;
+      } catch (directError) {
+        console.warn(`API ${method} to ${endpoint} failed:`, directError?.response?.data || directError.message);
+        throw directError;
+      }
     }
+    throw primaryError;
   }
 }
 

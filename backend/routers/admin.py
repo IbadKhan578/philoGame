@@ -116,27 +116,33 @@ def upload_philosopher_face(
         # Process with Pillow to ensure circle crop
         processed_bytes = process_face_image(raw_bytes)
 
-        # Target directory: frontend/public/assets/custom_faces
-        base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "frontend", "public", "assets", "custom_faces"))
-        os.makedirs(base_dir, exist_ok=True)
+        # Try saving to frontend/public/assets/custom_faces
+        try:
+            base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "frontend", "public", "assets", "custom_faces"))
+            os.makedirs(base_dir, exist_ok=True)
 
-        filename = f"face_{philosopher_id}_{int(time.time())}.png"
-        filepath = os.path.join(base_dir, filename)
+            filename = f"face_{philosopher_id}_{int(time.time())}.png"
+            filepath = os.path.join(base_dir, filename)
 
-        with open(filepath, "wb") as f:
-            f.write(processed_bytes)
+            with open(filepath, "wb") as f:
+                f.write(processed_bytes)
 
-        # Remove old custom face file if it exists
-        if philosopher.face_image and "/assets/custom_faces/" in philosopher.face_image:
-            old_name = philosopher.face_image.split("/")[-1]
-            old_path = os.path.join(base_dir, old_name)
-            if os.path.exists(old_path) and old_path != filepath:
-                try:
-                    os.remove(old_path)
-                except Exception:
-                    pass
+            # Remove old custom face file if it exists
+            if philosopher.face_image and "/assets/custom_faces/" in philosopher.face_image:
+                old_name = philosopher.face_image.split("/")[-1]
+                old_path = os.path.join(base_dir, old_name)
+                if os.path.exists(old_path) and old_path != filepath:
+                    try:
+                        os.remove(old_path)
+                    except Exception:
+                        pass
 
-        philosopher.face_image = f"/assets/custom_faces/{filename}"
+            philosopher.face_image = f"/assets/custom_faces/{filename}"
+        except OSError:
+            # Fallback for serverless environments (e.g. Vercel) with read-only root filesystems
+            b64_processed = base64.b64encode(processed_bytes).decode('utf-8')
+            philosopher.face_image = f"data:image/png;base64,{b64_processed}"
+
         db.commit()
         db.refresh(philosopher)
         return philosopher
