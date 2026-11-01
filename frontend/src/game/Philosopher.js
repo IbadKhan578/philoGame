@@ -91,6 +91,14 @@ export default class Philosopher extends Phaser.Physics.Arcade.Sprite {
   }
 
   createNameBadge(scene, x, y) {
+    if (this.badgeContainer) {
+      if (this.badgeText) this.badgeText.destroy();
+      if (this.badgeBg) this.badgeBg.destroy();
+      this.badgeContainer.removeAll(true);
+      this.badgeContainer.destroy(true);
+      this.badgeContainer = null;
+    }
+
     this.badgeContainer = scene.add.container(x, y);
     this.badgeContainer.setDepth(10000); // Always above sprites
 
@@ -99,24 +107,82 @@ export default class Philosopher extends Phaser.Physics.Arcade.Sprite {
     const paddingX = 10;
     const paddingY = 4;
 
-    const labelText = scene.add.text(0, 0, textStr, {
+    this.badgeText = scene.add.text(0, 0, textStr, {
       fontFamily: 'Cinzel, Georgia, serif',
       fontSize: '12px',
       color: '#fdf6e2',
       fontStyle: 'bold',
     }).setOrigin(0.5);
 
-    const bounds = labelText.getBounds();
+    const bounds = this.badgeText.getBounds();
     const bgWidth = bounds.width + paddingX * 2;
     const bgHeight = bounds.height + paddingY * 2;
 
-    const bgRect = scene.add.graphics();
-    bgRect.fillStyle(0x1a1a24, 0.85);
-    bgRect.lineStyle(1.5, 0xd4af37, 0.9);
-    bgRect.fillRoundedRect(-bgWidth / 2, -bgHeight / 2, bgWidth, bgHeight, 6);
-    bgRect.strokeRoundedRect(-bgWidth / 2, -bgHeight / 2, bgWidth, bgHeight, 6);
+    this.badgeBg = scene.add.graphics();
+    this.badgeBg.fillStyle(0x1a1a24, 0.85);
+    this.badgeBg.lineStyle(1.5, 0xd4af37, 0.9);
+    this.badgeBg.fillRoundedRect(-bgWidth / 2, -bgHeight / 2, bgWidth, bgHeight, 6);
+    this.badgeBg.strokeRoundedRect(-bgWidth / 2, -bgHeight / 2, bgWidth, bgHeight, 6);
 
-    this.badgeContainer.add([bgRect, labelText]);
+    this.badgeContainer.add([this.badgeBg, this.badgeText]);
+  }
+
+  updateName(newName) {
+    this.philosopherName = newName;
+    if (this.badgeText && this.badgeText.active) {
+      this.badgeText.setText(newName);
+      const bounds = this.badgeText.getBounds();
+      const paddingX = 10;
+      const paddingY = 4;
+      const bgWidth = bounds.width + paddingX * 2;
+      const bgHeight = bounds.height + paddingY * 2;
+
+      if (this.badgeBg && this.badgeBg.active) {
+        this.badgeBg.clear();
+        this.badgeBg.fillStyle(0x1a1a24, 0.85);
+        this.badgeBg.lineStyle(1.5, 0xd4af37, 0.9);
+        this.badgeBg.fillRoundedRect(-bgWidth / 2, -bgHeight / 2, bgWidth, bgHeight, 6);
+        this.badgeBg.strokeRoundedRect(-bgWidth / 2, -bgHeight / 2, bgWidth, bgHeight, 6);
+      }
+    } else if (this.scene) {
+      this.createNameBadge(this.scene, this.x, this.y - 34);
+    }
+  }
+
+  updateData(philosopherData) {
+    this.dataObj = philosopherData;
+    this.school = philosopherData.school;
+
+    // 1. Update Name cleanly without stacking
+    if (this.philosopherName !== philosopherData.name) {
+      this.updateName(philosopherData.name);
+    }
+
+    // 2. Update Position if modified
+    if (philosopherData.position_x !== undefined && philosopherData.position_y !== undefined) {
+      if (this.x !== philosopherData.position_x || this.y !== philosopherData.position_y) {
+        this.setPosition(philosopherData.position_x, philosopherData.position_y);
+        if (this.badgeContainer) {
+          this.badgeContainer.setPosition(this.x, this.y - 34);
+        }
+        if (this.pulseCircle) {
+          this.pulseCircle.setPosition(this.x, this.y + 14);
+        }
+      }
+    }
+
+    // 3. Update Face if changed
+    const newFace = philosopherData.face_image || null;
+    if (this.faceImage !== newFace) {
+      this.faceImage = newFace;
+      if (this.faceOverlay) {
+        this.faceOverlay.destroy();
+        this.faceOverlay = null;
+      }
+      if (this.faceImage) {
+        this.initFaceOverlay(this.scene);
+      }
+    }
   }
 
   initFaceOverlay(scene) {
@@ -149,6 +215,9 @@ export default class Philosopher extends Phaser.Physics.Arcade.Sprite {
 
   preUpdate(time, delta) {
     super.preUpdate(time, delta);
+    if (this.badgeContainer && this.badgeContainer.active) {
+      this.badgeContainer.setPosition(this.x, this.y - 34);
+    }
     if (this.faceOverlay && this.faceOverlay.active) {
       let ox = 0;
       let oy = -7;
@@ -200,8 +269,23 @@ export default class Philosopher extends Phaser.Physics.Arcade.Sprite {
       this.faceOverlay.destroy();
       this.faceOverlay = null;
     }
-    if (this.badgeContainer) this.badgeContainer.destroy();
-    if (this.pulseCircle) this.pulseCircle.destroy();
+    if (this.badgeText) {
+      this.badgeText.destroy();
+      this.badgeText = null;
+    }
+    if (this.badgeBg) {
+      this.badgeBg.destroy();
+      this.badgeBg = null;
+    }
+    if (this.badgeContainer) {
+      this.badgeContainer.removeAll(true);
+      this.badgeContainer.destroy(true);
+      this.badgeContainer = null;
+    }
+    if (this.pulseCircle) {
+      this.pulseCircle.destroy();
+      this.pulseCircle = null;
+    }
     super.destroy(fromScene);
   }
 }

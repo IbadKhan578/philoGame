@@ -402,23 +402,55 @@ export default class GameScene extends Phaser.Scene {
   }
 
   rebuildPhilosophers(philosophersList) {
+    if (!philosophersList) return;
+
+    const existingMap = new Map();
     if (this.philosophers) {
       for (const p of this.philosophers) {
-        if (p && p.destroy) p.destroy();
+        if (p && p.active) {
+          existingMap.set(p.id, p);
+        }
       }
     }
-    if (this.philosophersGroup) {
-      this.philosophersGroup.clear(true, true);
-    }
-    this.philosophers = [];
+
+    const nextPhilosophers = [];
+    const incomingIds = new Set();
+
     for (const pData of philosophersList) {
-      const textureKey = (pData.image || 'socrates.png').replace('.png', '');
-      const safeImage = this.textures.exists(textureKey) ? pData.image : 'socrates.png';
-      const safeData = { ...pData, image: safeImage };
-      const pSprite = new Philosopher(this, safeData);
-      this.philosophers.push(pSprite);
-      this.philosophersGroup.add(pSprite);
+      incomingIds.add(pData.id);
+      const existing = existingMap.get(pData.id);
+
+      if (existing && existing.active) {
+        // Philosopher already exists: update name, badge, position, and face cleanly in-place
+        existing.updateData(pData);
+        nextPhilosophers.push(existing);
+      } else {
+        // New philosopher created: instantiate sprite
+        const textureKey = (pData.image || 'socrates.png').replace('.png', '');
+        const safeImage = this.textures.exists(textureKey) ? pData.image : 'socrates.png';
+        const safeData = { ...pData, image: safeImage };
+        const pSprite = new Philosopher(this, safeData);
+        nextPhilosophers.push(pSprite);
+        if (this.philosophersGroup) {
+          this.philosophersGroup.add(pSprite);
+        }
+      }
     }
+
+    // Safely remove any philosopher that was deleted
+    for (const [id, p] of existingMap.entries()) {
+      if (!incomingIds.has(id)) {
+        if (this.philosophersGroup) {
+          this.philosophersGroup.remove(p, true, true);
+        }
+        if (p && p.destroy) {
+          p.destroy();
+        }
+      }
+    }
+
+    this.philosophers = nextPhilosophers;
+
     if (this.interactionManager) {
       this.interactionManager.philosophers = this.philosophers;
       this.interactionManager.preloadWisdom();
